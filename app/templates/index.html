@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Quiz Master
+{% endblock %}
+
+{% block content %}
+<div class="welcome" style="text-align: center">
+    <div>
+      <h2>Quiz Master</h2>
+      <p>
+        Welcome to our platform! Get the quizzes you are looking for and ace your subject.
+      </p>
+      <button class="btn btn-info btn-md" onclick="window.location.href='/login';">
+        Login
+      </button>
+      <button class="btn btn-info btn-md" onclick="window.location.href='/register';">
+        User Signup
+      </button>
+    </div>
+  </div>
+{% endblock %}
+
+{% block style %}
+<style>
+    .welcome {
+    background-color: rgb(200, 232, 232);
+    margin: 72px auto;
+    color: rgb(5, 127, 127); 
+    padding: 20px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+}
+
+
+
+
+
+.welcome button {
+    margin: 5px;
+    background-color: white; 
+    color: rgb(5, 127, 127); 
+    border: 1px solid rgb(5, 127, 127); 
+}
+
+</style>
+{%endblock%}

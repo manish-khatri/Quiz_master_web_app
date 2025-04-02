@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: rgb(5, 127, 127);">
+    <a class="navbar-brand" href="/" style="margin-left: 20px;">Quiz Master</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        {% if session.get('user_id') %}
+          {% if session.get('user_type') == 'customer' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.customer_homepage') }}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('main.user_summary')}}">Summary</a>
+            </li>
+          {% elif session.get('user_type') == 'admin' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.admin_homepage') }}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.admin_summary') }}">Summary</a>
+            </li>
+          {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+            </li>          
+        {% else %}
+          <li class="nav-item active">
+            <a class="nav-link" href="register">User SignUp <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="login">Login</a>
+          </li>
+        {% endif %}
+      </ul>
+
+      {% if session.get('user_id') %}
+      {% if session.get('user_type') == 'admin' %}
+      <form class="d-flex ms-auto" action="{{ url_for('main.search') }}" method="GET">
+        <div class="input-group">
+            <select name="filter" class="form-select bg-white border-secondary">
+                <option value="subject">Subject</option>
+                <option value="quiz">Quiz</option>
+                <option value="chapter">Chapter</option>
+                <option value="user">User</option>
+            </select>
+            <input class="form-control border-secondary" type="text" name="query" placeholder="Search..." aria-label="Search">
+            <button class="btn btn-outline-info" type="submit">Search</button>
+        </div>
+      </form>
+      {% else %}
+      <form class="d-flex ms-auto" action="{{ url_for('main.search') }}" method="GET">
+        <div class="input-group">
+            <select name="filter" class="form-select bg-white border-secondary">
+                <option value="subject">Subject</option>
+                <option value="quiz">Quiz</option>
+                <option value="chapter">Chapter</option>
+            </select>
+            <input class="form-control border-secondary" type="text" name="query" placeholder="Search..." aria-label="Search">
+            <button class="btn btn-outline-info" type="submit">Search</button>
+        </div>
+      </form>
+      {% endif %}
+      {% endif %}
+    </div>
+  </nav>

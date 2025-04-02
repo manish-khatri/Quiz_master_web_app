@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Quiz - {{ quiz.q_name }}
+{% endblock %}
+
+{% block script %}
+<script>
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        let interval = setInterval(function () {
+            minutes = Math.floor(timer / 60);
+            seconds = timer % 60;
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            document.getElementById("timer").innerText = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(interval);
+                document.getElementById("quizForm").submit();
+            }
+        }, 1000);
+    }
+
+    window.onload = function () {
+        let quizDuration = Number({{ time_duration }}) * 60;
+        startTimer(quizDuration);
+    };
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="position-fixed end-0 top-0 m-4">
+        <div class="bg-danger text-white p-3 rounded shadow text-center mt-5">
+            <h6 class="mb-0">Time Left</h6>
+            <span id="timer" class="fs-5 fw-bold">00:00</span>
+        </div>
+    </div>
+
+    <div class="card shadow-lg border-info mx-auto mt-4 mb-3" style="max-width: 900px;">
+        <div class="d-flex justify-content-between align-items-center bg-info text-white px-4 py-3 rounded-top">
+            <div class="text-start">
+                <p class="mb-1"><strong>Subject:</strong> {{ subject.sub_name }}</p>
+                <p class="mb-0"><strong>Chapter:</strong> {{ chapter.chp_name }}</p>
+            </div>
+            <div class="text-center flex-grow-1">
+                <h3 class="mb-0">{{ quiz.q_name }}</h3>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form id="quizForm" method="POST" action="{{ url_for('main.submit_quiz', q_id=quiz.q_id) }}">
+                {% for question in questions %}
+                <div class="mb-4">
+                    <h5 class="fw-bold">{{ loop.index }}. {{ question.statement }}</h5>
+                    
+                    <div class="ms-2">
+                        {% for option in question.options %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q{{ question.ques_id }}" value="{{ option }}" required>
+                            <label class="form-check-label">{{ question.options[option] }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="position-fixed bottom-0 end-0" style="margin-bottom: 100px; margin-right: 23px;">
+    <button type="submit" form="quizForm" class="btn btn-success btn-lg px-4 shadow">Submit</button>
+</div>
+{% endblock %}

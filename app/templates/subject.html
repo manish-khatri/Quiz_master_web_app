@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Subject Details
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold">{{ sub.sub_name }}</h1>
+                <p class="text-muted">{{ sub.sub_desc }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for chapter in chapters %}
+        {% if chapter.sub_id == sub.sub_id %}
+        <div class="col-md-6">
+            <div class="card shadow-lg mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ loop.index }}. {{ chapter.chp_name }}</h5>
+                    <p class="text-muted">{{ chapter.chp_desc }}</p>
+                    <div class="d-flex justify-content-between">
+                        <a class="btn" style="color: rgb(5, 127, 127); border: 2px solid rgb(5, 127, 127);" href="{{ url_for('main.quiz_list',subject=sub.sub_id,chap=chapter.chp_id) }}">Show Quizzes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block style %}
+<style>
+    body {
+        background-color: white;
+    }
+    
+    .card {
+        border-left: 5px solid rgb(9, 120, 120);
+    }
+
+    .card-title .badge {
+        font-size: 1rem;
+        padding: 5px 10px;
+    }
+
+    .modal-content {
+        border-radius: 2px solid rgb(9, 120, 120);
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+    }
+</style>
+{% endblock %}

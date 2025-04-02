@@ -1,0 +1,137 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Questions
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center shadow-lg mt-4 rounded-3 p-4 border block1">
+    <div class="fw-bold fs-3 border-end pe-5">
+        {{ sub.sub_name }}
+        <p class="text-muted mb-0">{{ chapter.chp_name }}</p>
+    </div>
+    <div class="border-end pe-5 fw-bold fs-3">
+        Quiz Name
+        <div class="text-muted">{{ quiz.q_name }}</div>
+    </div>
+    <button class="btn btn-info ms-3" data-toggle="modal" data-target="#addQuestion{{chapter.chp_id}}">Add Question</button>
+</div>
+
+<div class="mt-4">
+    {% for ques in questions %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-title">{{ loop.index }}. {{ ques.statement }}</h5>
+                <div>
+                    <a class="btn btn-warning" data-toggle="modal" data-target="#editQuestion{{ques.ques_id}}">Edit</a>
+                    <a class="btn btn-danger" data-toggle="modal" data-target="#deleteQuestion{{ques.ques_id}}">Delete</a>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for key, value in ques.options.items() %}
+                <li class="list-group-item"><strong>{{ key }}:</strong> {{ value }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addQuestion{{chapter.chp_id}}" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Question</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addQuestion{{chapter.chp_id}}Form" method="POST" action="{{ url_for('main.add_question', sub=sub.sub_id, chapter=chapter.chp_id, quiz=quiz.q_id) }}">
+                        <div class="mb-3">
+                            <label class="form-label">Question Statement</label>
+                            <input type="text" class="form-control" name="statement" required>
+                        </div>
+                        {% for i in range(1, 5) %}
+                        <div class="mb-3">
+                            <label class="form-label">Option {{ i }}</label>
+                            <input type="text" class="form-control" name="option{{ i }}" required>
+                        </div>
+                        {% endfor %}
+                        <div class="mb-3">
+                            <label class="form-label">Correct Option</label>
+                            <input type="text" class="form-control" name="correctAnswer" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="addQuestion{{chapter.chp_id}}Form" class="btn btn-success">Add</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+      </div>
+
+    <div class="modal fade" id="editQuestion{{ques.ques_id}}" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Question</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editQuestion{{ques.ques_id}}Form" method="POST" action="{{url_for('main.edit_ques',question=ques.ques_id)}}">
+                        <div class="mb-3">
+                            <label class="form-label">Question Statement</label>
+                            <input type="text" class="form-control" name="statement" value="{{ques.statement}}" required>
+                        </div>
+                        {% for key, value in ques.options.items() %}
+                        <div class="mb-3">
+                            <label class="form-label">Option {{ key }}</label>
+                            <input type="text" class="form-control" name="option{{ key }}" value="{{ value }}" required>
+                        </div>
+                        {% endfor %}
+                        <div class="mb-3">
+                            <label class="form-label">Correct Option</label>
+                            <input type="text" class="form-control" name="correctAnswer" value="{{ques.answer}}" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="editQuestion{{ques.ques_id}}Form" class="btn btn-info">Edit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="deleteQuestion{{ques.ques_id}}">
+        <div class="modal-dialog" role="document">
+          <form method="POST" action="{{ url_for('main.delete_ques', ques=ques.ques_id) }}">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" style="color: red;">Delete Question!!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p style="color: rgb(210, 86, 86);">Are you sure you want to delete the Question?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-danger">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block style %}
+<style> 
+</style>
+{% endblock %}

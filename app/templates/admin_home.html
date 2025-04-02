@@ -1,0 +1,237 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Admin
+{% endblock %}
+
+{% block content %}
+<div class="mt-5 mb-3 subjects">
+{% for subject in subject_list %}
+<div class="sub_card">
+<h4 class="subject-heading">
+  <a href="{{ url_for('main.subject_details',sub_id=subject.sub_id) }}" style="color: black; text-decoration: none ;">
+    {{ subject.sub_name }}
+  </a>
+</h4>
+<div>
+<p><strong >{{ subject.sub_desc }}</strong></p>
+  Number of Chapter : 
+  {{ chap | selectattr('sub_id', 'equalto', subject.sub_id) | list | length }}<br>
+</div>
+<div class="buttons">
+  <button class="btn btn-outline-warning"  data-toggle="modal" data-target="#editSubject{{subject.sub_id}}">Edit</button>
+  <a class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteSubject{{subject.sub_id}}">Delete</a>
+  <a class="btn btn-outline-info" href="{{ url_for('main.subject_details',sub_id=subject.sub_id) }}">Open</a>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="deleteSubject{{subject.sub_id}}">
+  <div class="modal-dialog" role="document">
+    <form method="POST" action="{{ url_for('main.delete_subject', s_id=subject.sub_id) }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="color: red;">Delete Subject!!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p style="color: rgb(210, 86, 86);">Are you sure you want to delete the subject?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="modal fade" id="editSubject{{subject.sub_id}}" tabindex="-1" role="dialog" aria-labelledby="editSubjectLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editSubjectLabel">Edit Subject</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editSubjectForm{{subject.sub_id}}" method="POST" action="{{ url_for('main.edit_subject',s_id=subject.sub_id) }}">
+          <div class="form-group">
+            <label for="subjectName{{subject.sub_id}}">Subject Name</label>
+            <input type="text" class="form-control" value="{{subject.sub_name}}" id="subjectName{{subject.sub_id}}" name="subject_name" required>
+          </div>
+          <div class="form-group">
+              <label for="subject_desc{{subject.sub_id}}">Description</label>
+              <input type="text" class="form-control" value="{{subject.sub_desc}}" id="subject_desc{{subject.sub_id}}" name="description" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" form="editSubjectForm{{subject.sub_id}}" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endfor %}
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped table-bordered table-hover shadow-sm">
+      <thead class="table-info">
+          <tr class="text-center">
+              <th>S_No.</th>
+              <th>User Name</th>
+              <th>User Type</th>
+              <th>Qualification</th>
+              <th>Date Of Birth</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% if user_list %}
+          {% for user in user_list %}
+              <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ user.user_name }}</td>
+                  <td>{{ user.user_type }}</td>
+                  <td>{{ user.qualification }}</td>
+                  <td>{{ user.dob }}</td>
+                  <td>
+                    <button class="btn btn-outline-danger" data-toggle="modal" data-target="#removeUser{{user.user_id}}">Remove</button>
+                  </td>
+              </tr>
+
+              <div class="modal" tabindex="-1" role="dialog" id="removeUser{{user.user_id}}">
+                <div class="modal-dialog" role="document">
+                  <form method="POST" action="{{ url_for('main.remove_user', user=user.user_id) }}">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" style="color: red;">Remove User!!</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <p style="color: rgb(210, 86, 86);">Are you sure you want to Remove the User?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+          {% endfor %}
+          {% else %}
+              <tr>
+                  <td colspan="6" class="text-muted fs-5">No registration yet</td>
+              </tr>
+          {% endif %}
+      </tbody>
+  </table>
+</div>
+
+<div class="fab-container justify-content-center">
+  <button class="fab" data-toggle="modal" data-target="#newSubjectModal">
+    <i class="fas fa-plus fa-lg"></i> S u b j e c t 
+  </button>
+</div>
+
+<div class="modal fade" id="newSubjectModal" tabindex="-1" role="dialog" aria-labelledby="newSubjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newSubjectModalLabel">Add New Subject</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="newSubjectForm" method="POST" action="{{ url_for('main.add_subject') }}">
+          <div class="form-group">
+            <label for="subjectName">Subject Name</label>
+            <input type="text" class="form-control" id="SubjectName" name="subject_name" required>
+          </div>
+          <div class="form-group">
+              <label for="subjectName">Description</label>
+              <input type="text" class="form-control" id="description" name="description" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" form="newSubjectForm" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<style>
+.subjects {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 200px;
+  gap: 20px;
+  text-align: center;
+  width: 1100px;
+  margin: auto;
+}
+
+.sub_card {
+  width: calc(25% - 20px);
+  border: 2px solid grey;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: left;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.buttons{
+  border-top: 2px solid ;
+  padding-top: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.subject-heading {
+  font-weight:bold;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid ;
+}
+
+.fab-container {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+}
+
+.fab {
+  background-color: white;
+  color: rgba(255, 30, 0, 0.777);
+  border:2px solid rgba(255, 30, 0, 0.777);
+  border-radius: 50%;
+  padding: 15px;
+  font-size: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.fab:hover {
+  background-color: rgba(255, 30, 0, 0.777);
+  color: white;
+  transform: translateY(-6px);
+}
+
+</style>
+{% endblock %}
+

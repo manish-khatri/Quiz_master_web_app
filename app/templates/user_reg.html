@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Customer register
+{% endblock %}
+
+{% block content %}
+<div id="box">
+    <div></div>
+    <div id="register" class="form-group row">
+        <h1>Customer SignUp</h1>
+        <form class="mt-4" method="post" action="{{url_for('main.register')}}">
+            <label class="form-label" for="email">
+            Email ID (Username):  <input class="form-control" id="email" name="email" type="email"/>
+            </label>
+            <label class="form-label" for="fullname">
+            Fullname:  <input class="form-control" id="fullname" name="fullname" type="text"/>
+            </label><br>
+            <label class="form-label" for="password">
+            Password:  <input type="password" class="form-control" id="password" name="password" type="text"/>
+            </label>
+            <label class="form-label" for="cpassword">
+            Confirm Password:  <input type="password" class="form-control" id="cpassword" name="cpassword" type="text"/>
+            </label><br>
+            <label class="form-label" for="address">
+            Qualification:  <input class="form-control" id="qualification" name="qualification" type="text"/>
+            </label>
+            <label class="form-label" for="dob">
+            Date Of Birth:  <input class="form-control" id="dob" name="dob" type="date"/>
+            </label><br>
+            <button class="btn" type="submit" style="color: rgb(35, 124, 135) ; border-color: rgb(35, 124, 135) ; border-width: 2px;">Register</button>
+        </form>
+    </div>
+    <div></div>
+</div>
+{% endblock %}
+
+{% block style %}
+<style>
+    #register {
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    } 
+    #box {
+        display: flex;
+        margin-top: 60px;
+        justify-content: space-evenly;
+        border: 3px solid rgb(5, 127, 127); 
+        padding: 10px;
+        border-radius: 10px;
+        width: 50%;
+        margin: 40px auto;
+    }
+</style>
+{% endblock %}

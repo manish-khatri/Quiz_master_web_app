@@ -1,0 +1,114 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Subject Details
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg p-4 mb-4 rounded">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold">{{ sub.sub_name }}</h1>
+                <p class="text-muted fs-5">{{ chapter.chp_name }}</p>
+            </div>
+            <div>
+                <button class="btn btn-info" data-toggle="modal" data-target="#addQuiz">Add Quiz</button>
+                <div class="modal fade" id="addQuiz" tabindex="-1" role="dialog" aria-labelledby="addQuizLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="addQuizLabel">Add New Quiz</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form id="addQuizForm" method="POST" action="{{ url_for('main.add_quiz', sub=sub.sub_id, chapter=chapter.chp_id) }}">
+                            <div class="form-group">
+                              <label for="QuizName">Quiz Name</label>
+                              <input type="text" class="form-control" id="QuizName" name="quiz_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quizdate">Quiz Date</label>
+                                <input type="date" class="form-control" id="quizdate" name="quiz_date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quizduration">Duration (in minutes)</label>
+                                <input type="number" class="form-control" id="quizduration" placeholder="duration in minutes" name="quiz_duration" required>
+                            </div>
+                          </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" form="addQuizForm" class="btn btn-primary">Save</button>
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div>
+{% for quiz in quiz_list %}
+<div class="d-flex justify-content-between shadow rounded-3 border p-3 mb-3">
+  <div class="border-end pr-5"><div class="fs-5 fw-bold">Quiz Name</div>{{quiz.q_name}}</div>
+  <div class="border-end pr-5"><div class="fs-5 fw-bold">Quiz Date</div>{{quiz.date_of_quiz.strftime('%d-%m-%Y')}}</div>
+  <div class="border-end pr-5"><div class="fs-5 fw-bold">Duration</div>{{quiz.time_dur}}</div>
+  <div class="d-flex justify-content-center align-items-center">
+    <button class="btn btn-outline-info" data-toggle="modal" data-target="#addQuestion{{quiz.q_id}}">Add Questions</button>
+    <a class="btn btn-outline-info ml-3" href="{{ url_for('main.questions',subject=sub.sub_id,chap=chapter.chp_id,quiz=quiz.q_id) }}">Open</a>
+  </div>
+</div>
+
+<div class="modal fade" id="addQuestion{{quiz.q_id}}" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">Add New Question</h5>
+              <button type="button" class="close" data-dismiss="modal">
+                  <span>&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form id="addQuestion{{quiz.q_id}}Form" method="POST" action="{{ url_for('main.add_question', sub=sub.sub_id, chapter=chapter.chp_id, quiz=quiz.q_id) }}">
+                  <div class="mb-3">
+                      <label class="form-label">Question Statement</label>
+                      <input type="text" class="form-control" name="statement" required>
+                  </div>
+                  {% for i in range(1, 5) %}
+                  <div class="mb-3">
+                      <label class="form-label">Option {{ i }}</label>
+                      <input type="text" class="form-control" name="option{{ i }}" required>
+                  </div>
+                  {% endfor %}
+                  <div class="mb-3">
+                      <label class="form-label">Correct Option</label>
+                      <input type="text" class="form-control" name="correctAnswer" required>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="submit" form="addQuestion{{quiz.q_id}}Form" class="btn btn-success">Add</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% endfor %}
+</div>
+</div>
+{% endblock %}
+
+{% block style %}
+<style>
+    body {
+        background-color: white;
+    }
+    
+    .card {
+        border-left: 5px solid rgb(9, 120, 120);
+    }
+</style>
+{% endblock %}

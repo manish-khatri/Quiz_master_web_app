@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Questions
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center shadow-lg mt-4 rounded-3 p-4 border block1">
+    <div class="fw-bold fs-3 border-end pe-5">
+        {{ sub.sub_name }}
+        <p class="text-muted mb-0">{{ chapter.chp_name }}</p>
+    </div>
+    <div class="border-end pe-5 fw-bold fs-3">
+        Quiz Name
+        <div class="text-muted">{{ quiz.q_name }}</div>
+    </div>
+</div>
+
+<div class="mt-4">
+    {% for ques in questions %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-title">{{ loop.index }}. {{ ques.statement }}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for key, value in ques.options.items() %}
+                <li class="list-group-item"><strong>{{ key }}:</strong> {{ value }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block style %}
+<style> 
+</style>
+{% endblock %}

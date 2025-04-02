@@ -1,0 +1,96 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Customer
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="big_box p-4 shadow-lg">
+        <h3 class="mb-3 text-center text-info">Subjects You Might Be Interested In</h3>
+        <div class="recent_subject d-flex flex-wrap justify-content-center gap-3 mb-4">
+            {% for sub in subjects %}
+            <div class="flex d-flex align-items-center justify-content-center">
+                <a href="{{ url_for('main.subject', sub_id=sub.sub_id) }}" 
+                   class="text-decoration-none text-info fs-5">
+                    {{ sub.sub_name }}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="{{ url_for('main.subject_list') }}" class="text-info d-block text-center mt-2">...more subjects</a>
+    </div>
+
+    <h2 class="mb-3 mt-5 text-info">Completed Quizzes</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover shadow-sm">
+            <thead class="table-info">
+                <tr class="text-center">
+                    <th>S_No.</th>
+                    <th>Subject Name</th>
+                    <th>Chapter Name</th>
+                    <th>Quiz Name</th>
+                    <th>Date</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if scores %}
+                {% for score in scores %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ score.sub_name }}</td>
+                        <td>{{ score.chp_name }}</td>
+                        <td>{{ score.q_name }}</td>
+                        <td>{{ score.time_stamp }}</td>
+                        <td>{{ score.total_score }}</td>
+                    </tr>
+                {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-muted fs-5">No Quizzes Attempted Yet</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<style>
+    .big_box {
+        border: 2px solid rgb(9, 120, 120);
+        border-radius: 20px;
+        text-align: center;
+        width: 90%;
+        max-width: 1100px;
+        margin: auto;
+        background-color: #f8f9fa;
+    }
+
+    .recent_subject {
+        margin-bottom: 30px;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .flex {
+        border: 1px solid rgb(16, 153, 153);
+        background-color: rgb(200, 232, 232);
+        border-radius: 10px;
+        height: 150px;
+        width: 200px;
+        transition: transform 0.2s;
+    }
+
+    .flex:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    a.text-info:hover {
+        color: rgb(16, 153, 153);
+    }
+</style>
+{% endblock %}

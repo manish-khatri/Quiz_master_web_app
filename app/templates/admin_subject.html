@@ -1,0 +1,183 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Subject Details
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold">{{ sub.sub_name }}</h1>
+                <p class="text-muted">{{ sub.sub_desc }}</p>
+            </div>
+            <div>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#editSubject">Edit</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#newChapterModal">Add Chapter</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for chapter in chapters %}
+        {% if chapter.sub_id == sub.sub_id %}
+        <div class="col-md-6">
+            <div class="card shadow-lg mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ loop.index }}. {{ chapter.chp_name }}</h5>
+                    <p class="text-muted">{{ chapter.chp_desc }}</p>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-warning" data-toggle="modal" data-target="#editChapter{{chapter.chp_id}}" >Edit</button>
+                        <button class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteChapter{{chapter.chp_id}}" >Delete</button>
+                        <a class="btn" style="color: rgb(5, 127, 127); border: 2px solid rgb(5, 127, 127);" href="{{ url_for('main.quiz_list',subject=sub.sub_id,chap=chapter.chp_id) }}">Show Quizzes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="modal" tabindex="-1" role="dialog" id="deleteChapter{{chapter.chp_id}}">
+            <div class="modal-dialog" role="document">
+              <form method="POST" action="{{ url_for('main.delete_chapter', chap=chapter.chp_id) }}">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" style="color: red;">Delete Chapter!!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <p style="color: rgb(210, 86, 86);">Are you sure you want to delete the Chapter?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Yes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        <div class="modal fade" id="editChapter{{chapter.chp_id}}" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Chapter</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editChapterForm" method="POST" action="{{ url_for('main.edit_chapter', chap=chapter.chp_id) }}">
+                            <div class="mb-3">
+                                <label class="form-label">Chapter Name</label>
+                                <input type="text" class="form-control" value="{{chapter.chp_name}}" name="chapter_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <input type="text" class="form-control" value="{{chapter.chp_desc}}" name="description" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" form="editChapterForm" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal fade" id="newChapterModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Chapter</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="newChapterForm" method="POST" action="{{ url_for('main.add_chapter', s_id=sub.sub_id) }}">
+                    <div class="mb-3">
+                        <label class="form-label">Chapter Name</label>
+                        <input type="text" class="form-control" name="chapter_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" name="description" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="newChapterForm" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editSubject" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Subject</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editSubjectForm" method="POST" action="{{ url_for('main.edit_subject', s_id=sub.sub_id) }}">
+                    <div class="mb-3">
+                        <label class="form-label">Subject Name</label>
+                        <input type="text" class="form-control" value="{{ sub.sub_name }}" name="subject_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" value="{{ sub.sub_desc }}" name="description" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="editSubjectForm" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    
+    .card {
+        border-left: 5px solid rgb(9, 120, 120);
+    }
+
+    .card-title .badge {
+        font-size: 1rem;
+        padding: 5px 10px;
+    }
+
+    .modal-content {
+        border-radius: 2px solid rgb(9, 120, 120);
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+    }
+</style>
+{% endblock %}
